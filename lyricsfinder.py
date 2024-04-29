@@ -63,36 +63,31 @@ def auto_hastag(title, artist):
 # Helper function to save lyrics to a CSV file
 def auto_save(title, artist):
     filename = "./Song Finder/song_saved.csv"
-
-    # Check if the file exists or create it
+    
+    # Ensure the file exists
     if not os.path.exists(filename):
         try:
             with open(filename, 'w', newline='') as file:
-                pass
+                writer = csv.writer(file)
+                writer.writerow(["Title", "Artist"])  # Optional: Write headers
             print(f"{filename} created successfully.")
         except Exception as e:
             print(f"Error creating {filename}: {e}")
+            return
 
-    # Check if the title already exists in the CSV
+    # Check for existing title and save if new
     try:
-        with open(filename, 'r') as file:
+        with open(filename, 'r+', newline='') as file:
             reader = csv.reader(file)
             for row in reader:
-                existing_title = row[0]  # Assuming title is in the first column
-                if existing_title == title:
+                if row[0] == title:
                     print(f"{title} already exists in {filename}.")
                     return
-    except Exception as e:
-        print(f"Error reading {filename}: {e}")
-
-    # Save the title and artist to the CSV
-    try:
-        with open(filename, 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow([title, artist])
-        print(f"{title} by {artist} saved to {filename}.")
+            print(f"{title} by {artist} saved to {filename}.")
     except Exception as e:
-        print(f"Error saving to {filename}: {e}")
+        print(f"Error accessing {filename}: {e}")
 
 # Function to search for lyrics and display results
 def search_lyrics(event=None):
