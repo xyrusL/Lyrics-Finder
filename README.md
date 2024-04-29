@@ -6,7 +6,7 @@ A Python application that allows you to search for song lyrics using the Genius 
 
 - Search for song lyrics by song title
 - Display a list of search results with song titles and artists
-- View formatted lyrics with song title, artist, and hashtags
+- View formatted lyrics with song title, artist, and tags
 - Automatically copy lyrics to the clipboard
 - Save the history of the song you get to a CSV file
 
