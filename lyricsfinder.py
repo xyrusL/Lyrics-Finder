@@ -8,7 +8,7 @@ import csv
 from tkinter import scrolledtext, ttk
 
 # Create the Genius API client
-genius = lyricsgenius.Genius('PUT HERE YOUR GENIUS API KEY')
+genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HERE')
 
 # Redirect print statements to the status_text widget
 class Redirect:
