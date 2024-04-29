@@ -4,11 +4,11 @@ A Python application that allows you to search for song lyrics using the Genius 
 
 ## Features
 
-- Search for song lyrics by song title
-- Display a list of search results with song titles and artists
-- View formatted lyrics with song title, artist, and tags
-- Automatically copy lyrics to the clipboard
-- Save the history of the song you get to a CSV file
+- Search for song lyrics by song title.
+- Display a list of search results with song titles and artists.
+- View formatted lyrics with song title, artist, and tags.
+- Automatically copy lyrics to the clipboard.
+- Save the history of the song you get to a CSV file.
 
 ## Prerequisites
 
@@ -25,19 +25,20 @@ A Python application that allows you to search for song lyrics using the Genius 
 
 ### Installing Dependencies
 
-1. Install the `lyricsgenius` library by running the following command: `pip install lyricsgenius`
+1. Install the `lyricsgenius` library by running the following command:
+   ```bash
+   pip install lyricsgenius
 
 ## Usage
 
 1. Clone or download the project repository.
 2. Open the project in your preferred Python IDE (e.g., PyCharm, Visual Studio Code).
 3. Replace `'YOUR_GENIUS_API_TOKEN_HERE'` in the code with your actual Genius API token.
-4. Run the `main.py` file.
+4. Run the `lyrcisfinder.py` file.
 5. Enter a song title in the search field and click the "Search" button or press Enter.
 6. Select a song from the list of search results.
-7. The formatted lyrics will be displayed in the lyrics text area, and automatically copied to the clipboard.
+7. The formatted lyrics will be displayed in the lyrics text area and automatically copied to the clipboard.
 8. The lyrics will also be saved to a CSV file in the `./Song Finder/song_saved.csv` directory.
-9. To reset the application, click the "Reset" button or press the 'r' key.
 
 ## Main Functions
 
@@ -63,4 +64,4 @@ This project was developed using Python 3.x and can be opened and run in any Pyt
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License.
