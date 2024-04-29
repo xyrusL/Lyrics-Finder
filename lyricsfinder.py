@@ -55,10 +55,10 @@ def format_lyrics(song):
     return formatted_lyrics
 
 # Helper function to generate hashtags
-def auto_hastag(title, artist):
-    artist = artist.replace(" ", "")
-    hasttag = f"Tags: {title.lower()}, {artist.lower()}, songlyrics"
-    return hasttag
+def auto_tags(title, artist):
+    title_clean = re.sub(r'[^\w\s]', '', title.replace('(Romanized)', ''))
+    artist_clean = artist.replace(' ', '')
+    return f"Tags: {title_clean.replace(' ', '').lower()}, {artist_clean.lower()}, songlyrics"
 
 # Helper function to save lyrics to a CSV file
 def auto_save(title, artist):
