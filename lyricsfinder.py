@@ -51,7 +51,7 @@ def format_lyrics(song):
         pattern = re.escape(new_title) + r'\s*-\s*'
         song_title = re.sub(pattern, '', song_title)
 
-    formatted_lyrics = f"{song_title}\n{song_artist}\n\n{lyrics}\n\n{auto_hastag(song_title, song_artist)}"
+    formatted_lyrics = f"{song_title}\n{song_artist}\n\n{lyrics}\n\n{auto_tags(song_title, song_artist)}"
     return formatted_lyrics
 
 # Helper function to generate hashtags
