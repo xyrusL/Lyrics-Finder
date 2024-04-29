@@ -64,4 +64,4 @@ This project was developed using Python 3.x and can be opened and run in any Pyt
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
