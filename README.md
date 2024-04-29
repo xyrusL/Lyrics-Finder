@@ -7,8 +7,8 @@ A Python application that allows you to search for song lyrics using the Genius 
 - Search for song lyrics by song title
 - Display a list of search results with song titles and artists
 - View formatted lyrics with song title, artist, and hashtags
-- Automatically copy lyrics to clipboard
-- Save lyrics to a CSV file
+- Automatically copy lyrics to the clipboard
+- Save the history of the song you get to a CSV file
 
 ## Prerequisites
 
@@ -46,7 +46,7 @@ A Python application that allows you to search for song lyrics using the Genius 
 - `auto_copy`: Automatically copies the lyrics to the clipboard.
 - `auto_save`: Saves the lyrics to a CSV file.
 - `reset_lyrics`: Resets the application and clears the search results and lyrics display.
-- `on_key_press`: Handles the 'r' key press event for resetting the application.
+- `on_key_press`: Handles the 'r' key press event to reset the application.
 
 ## Dependencies
 
