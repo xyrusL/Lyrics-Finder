@@ -9,7 +9,7 @@ import csv
 import pyperclip
 
 # Initialize the Genius API client
-genius = lyricsgenius.Genius('xp5wD9JAkU3E4pNb7myrcNUhGUNLEhAIZvsyOOn18M9l8DH2VnooB7kcoAg9OGny')
+genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HERE')
 isCopied = False  # Variable to keep track of whether the lyrics have been copied or not
 
 # Class to redirect print statements to the status_text widget
