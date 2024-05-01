@@ -6,11 +6,13 @@ import re
 import threading
 import os
 import csv
+import pyperclip
 
-# Create the Genius API client
-genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HERE')
+# Initialize the Genius API client
+genius = lyricsgenius.Genius('xp5wD9JAkU3E4pNb7myrcNUhGUNLEhAIZvsyOOn18M9l8DH2VnooB7kcoAg9OGny')
+isCopied = False  # Variable to keep track of whether the lyrics have been copied or not
 
-# Redirect print statements to the status_text widget
+# Class to redirect print statements to the status_text widget
 class Redirect:
     def __init__(self, widget):
         self.widget = widget
@@ -25,13 +27,13 @@ class Redirect:
     def flush(self):
         pass
 
-# Helper function to format lyrics
+# Function to format lyrics for display
 def format_lyrics(song):
     lyrics = song.lyrics
     song_title = song.title
     song_artist = song.artist
 
-    # Clean and format the lyrics
+    # Clean up and format the lyrics for better readability
     lyrics = re.sub(r'\d*Embed$', '', lyrics).strip()
     lyrics = re.sub(r'(?<!\n)\n?\[', '\n\n[', lyrics)
     lyrics = re.sub(r'\n{3,}', '\n\n', lyrics)
@@ -49,35 +51,38 @@ def format_lyrics(song):
     formatted_lyrics = f"{song_title}\n{song_artist}\n\n{lyrics}\n\n{auto_tags(song_title, song_artist)}"
     return formatted_lyrics
 
-# Helper function to generate hashtags
+# Function to generate hashtags for the song
 def auto_tags(title, artist):
     title_clean = re.sub(r'[^\w\s]', '', title.replace('(Romanized)', ''))
     artist_clean = artist.replace(' ', '')
     return f"Tags: {title_clean.replace(' ', '').lower()}, {artist_clean.lower()}, songlyrics"
 
-# Helper function to save lyrics to a CSV file
+# Function to automatically save the song details
 def auto_save(title, artist):
+    def clean_string(input_string):
+        return ''.join(char for char in input_string if char.isprintable())
+
     filename = "song_saved.csv"
+    title_clean = clean_string(title)
+    artist_clean = clean_string(artist)
+
+    # Check if the file exists and create it if it does not
     if not os.path.exists(filename):
         try:
             with open(filename, 'w', newline='') as file:
-                writer = csv.writer(file)
+                writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
                 writer.writerow(["Title", "Artist"])
             print(f"{filename} created successfully.")
         except Exception as e:
             print(f"Error creating {filename}: {e}")
             return
 
+    # Try to read and append to the file
     try:
-        with open(filename, 'r+', newline='') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                if row[0] == title:
-                    print(f"{title} already exists in {filename}.")
-                    return
-            writer = csv.writer(file)
-            writer.writerow([title, artist])
-            print(f"{title} by {artist} saved to {filename}.")
+        with open(filename, 'a', newline='') as file:
+            writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
+            writer.writerow([title_clean, artist_clean])
+            print(f"{title_clean} by {artist_clean} saved to {filename}.")
     except Exception as e:
         print(f"Error accessing {filename}: {e}")
 
@@ -118,16 +123,39 @@ def on_song_select(event):
 
 # Function to reset the application
 def reset_lyrics():
+    global isCopied
     song_entry.delete(0, tk.END)
     lyrics_text.configure(state="normal")
     lyrics_text.delete("1.0", tk.END)
     lyrics_text.configure(state="disabled")
     song_list.delete(0, tk.END)
     print("Application reset. Ready to search again.")
+    isCopied = False  # Reset isCopied to False
+
+def auto_copy(event):
+    global isCopied
+    if not isCopied:  # Check if the lyrics have not been copied yet
+        lyrics = lyrics_text.get("1.0", tk.END).strip()
+        if lyrics:  # Check if lyrics container is not empty
+            pyperclip.copy(lyrics)
+            print("Lyrics copied to clipboard.")
+            status_text.configure(state="normal")
+            status_text.configure(state="disabled")
+            isCopied = True  # Set isCopied to True after copying
+
+# Function to reset the application with 'r' key
+def reset_with_r(event):
+    global isCopied
+    lyrics = lyrics_text.get("1.0", tk.END).strip()
+    if isCopied and lyrics:  # Check if the lyrics have been copied and lyrics container is not empty
+        reset_lyrics()
 
 # Create the main window
 root = tk.Tk()
 root.title("Song Lyrics Search")
+
+# Bind the reset_with_r function to the 'r' key
+root.bind('r', reset_with_r)
 
 # Create the search frame
 search_frame = tk.Frame(root)
@@ -154,6 +182,10 @@ lyrics_frame.pack(pady=10, fill=tk.BOTH, expand=True)
 # Create the lyrics text widget with scrollbar
 lyrics_text = scrolledtext.ScrolledText(lyrics_frame, height=20, width=60, state="disabled", font=("Verdana", 10), fg="black")
 lyrics_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+lyrics_text.tag_configure("mouse_moved", underline=True)  # Configure the mouse_moved tag
+lyrics_text.bind("<Motion>", lambda event: lyrics_text.tag_add("mouse_moved", "@%d,%d" % (event.x, event.y)))
+lyrics_text.bind("<Leave>", lambda event: lyrics_text.tag_remove("mouse_moved", "1.0", tk.END))
+lyrics_text.bind("<Enter>", auto_copy)  # Bind the auto_copy function to the <Enter> event
 
 # Create the reset button
 reset_button = tk.Button(root, text="Reset", command=reset_lyrics)
