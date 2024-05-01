@@ -66,23 +66,34 @@ def auto_save(title, artist):
     title_clean = clean_string(title)
     artist_clean = clean_string(artist)
 
+    # Prepare the row to be saved
+    new_row = [title_clean, artist_clean]
+
     # Check if the file exists and create it if it does not
     if not os.path.exists(filename):
         try:
             with open(filename, 'w', newline='') as file:
                 writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
                 writer.writerow(["Title", "Artist"])
-            print(f"{filename} created successfully.")
+                writer.writerow(new_row)
+            print(f"{filename} created successfully with initial song.")
         except Exception as e:
             print(f"Error creating {filename}: {e}")
             return
 
-    # Try to read and append to the file
+    # Try to read the existing data and append the new row if it's not a duplicate
     try:
-        with open(filename, 'a', newline='') as file:
-            writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
-            writer.writerow([title_clean, artist_clean])
-            print(f"{title_clean} by {artist_clean} saved to {filename}.")
+        with open(filename, 'r', newline='') as file:
+            reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_ALL)
+            existing_rows = list(reader)
+
+        if new_row not in existing_rows:
+            with open(filename, 'a', newline='') as file:
+                writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
+                writer.writerow(new_row)
+                print(f"{title_clean} by {artist_clean} saved to {filename}.")
+        else:
+            print(f"{title_clean} by {artist_clean} is already saved in {filename}.")
     except Exception as e:
         print(f"Error accessing {filename}: {e}")
 
