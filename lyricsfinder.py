@@ -9,7 +9,7 @@ import csv
 import pyperclip
 
 # Initialize the Genius API client
-genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HERE')
+genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HER')
 isCopied = False  # Variable to keep track of whether the lyrics have been copied or not
 
 # Class to redirect print statements to the status_text widget
@@ -48,6 +48,13 @@ def format_lyrics(song):
         pattern = re.escape(new_title) + r'\s*-?\s*'
         song_title = re.sub(pattern, '', song_title)
 
+    # Asterisk some bad words, but not the whole word
+    bad_words = ['fuck', 'shit', 'damn', 'hell', 'nigga', 'sex']
+    for word in bad_words:
+        # Find the word in the lyrics
+        word_pattern = r'\b' + word + r'\b'
+        lyrics = re.sub(word_pattern, lambda match: ''.join('*' if char.lower() in 'aeiou' else char for char in match.group()), lyrics, flags=re.IGNORECASE)
+
     formatted_lyrics = f"{song_title}\n{song_artist}\n\n{lyrics}\n\n{auto_tags(song_title, song_artist)}"
     return formatted_lyrics
 
@@ -66,34 +73,45 @@ def auto_save(title, artist):
     title_clean = clean_string(title)
     artist_clean = clean_string(artist)
 
-    # Prepare the row to be saved
-    new_row = [title_clean, artist_clean]
-
     # Check if the file exists and create it if it does not
     if not os.path.exists(filename):
         try:
             with open(filename, 'w', newline='') as file:
                 writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
                 writer.writerow(["Title", "Artist"])
-                writer.writerow(new_row)
-            print(f"{filename} created successfully with initial song.")
+            print(f"{filename} created successfully.")
         except Exception as e:
             print(f"Error creating {filename}: {e}")
             return
 
-    # Try to read the existing data and append the new row if it's not a duplicate
+    # Try to read the existing data in the file to check for duplicates
+    existing_data = []
     try:
         with open(filename, 'r', newline='') as file:
-            reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_ALL)
-            existing_rows = list(reader)
+            reader = csv.reader(file)
+            next(reader)  # Skip the header row
+            for row in reader:
+                existing_data.append((row[0], row[1]))
+    except Exception as e:
+        print(f"Error accessing {filename}: {e}")
+        return
 
-        if new_row not in existing_rows:
-            with open(filename, 'a', newline='') as file:
-                writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
-                writer.writerow(new_row)
-                print(f"{title_clean} by {artist_clean} saved to {filename}.")
-        else:
-            print(f"{title_clean} by {artist_clean} is already saved in {filename}.")
+    # Check if the song details already exist in the file
+    if (title_clean, artist_clean) in existing_data:
+        print(f"{title_clean} by {artist_clean} already exists in {filename}.")
+        return
+
+    # Remove any duplicate entries from the existing data
+    unique_data = list(set(existing_data))
+
+    # Try to write the updated data (including the new song) to the file
+    try:
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
+            writer.writerow(["Title", "Artist"])
+            writer.writerows(unique_data)
+            writer.writerow([title_clean, artist_clean])
+            print(f"{title_clean} by {artist_clean} saved to {filename}.")
     except Exception as e:
         print(f"Error accessing {filename}: {e}")
 
