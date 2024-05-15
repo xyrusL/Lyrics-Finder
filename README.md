@@ -48,6 +48,7 @@ A Python application that allows you to search for song lyrics using the Genius 
 - `auto_save`: Saves the lyrics to a CSV file.
 - `reset_lyrics`: Resets the application and clears the search results and lyrics display.
 - `on_key_press`: Handles the 'r' key press event to reset the application.
+- `azLyrics_search`: Searches for lyrics using the AZLyrics API and displays them in the application.
 
 ## Dependencies
 
