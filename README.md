@@ -15,6 +15,7 @@ A Python application that allows you to search for song lyrics using the Genius 
 - Python 3.x
 - `tkinter` (usually included with Python)
 - `lyricsgenius` library
+- `azapi` library
 - Genius API token
 
 ### Getting the Genius API Token
@@ -34,11 +35,12 @@ A Python application that allows you to search for song lyrics using the Genius 
 1. Clone or download the project repository.
 2. Open the project in your preferred Python IDE (e.g., PyCharm, Visual Studio Code).
 3. Replace `'YOUR_GENIUS_API_TOKEN_HERE'` in the code with your actual Genius API token.
-4. Run the `lyrcisfinder.py` file.
-5. Enter a song title in the search field and click the "Search" button or press Enter.
-6. Select a song from the list of search results.
-7. The formatted lyrics will be displayed in the lyrics text area and automatically copied to the clipboard.
-8. The lyrics will also be saved to a CSV file in the `./Song Finder/song_saved.csv` directory.
+4. Run the `lyricsfinder.py` file.
+5. Enter a song title in the search field and click the "Search" button or press Enter to search using Genius.
+6. Optionally, click the "AZLyrics" button to search using AZLyrics after entering a song title.
+7. Select a song from the list of search results.
+8. The formatted lyrics will be displayed in the lyrics text area and automatically copied to the clipboard.
+9. The lyrics will also be saved to a CSV file in the `./Song Finder/song_saved.csv` directory.
 
 ## Main Functions
 
@@ -58,6 +60,7 @@ A Python application that allows you to search for song lyrics using the Genius 
 - `threading`: Python's library for creating and managing threads.
 - `os`: Python's library for interacting with the operating system.
 - `csv`: Python's library for reading and writing CSV files.
+- `azapi`: A Python library for fetching lyrics from AZLyrics.
 
 ## IDE
 
