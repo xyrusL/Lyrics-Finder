@@ -7,9 +7,10 @@ import threading
 import os
 import csv
 import pyperclip
+from azapi import AZlyrics
 
 # Initialize the Genius API client
-genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HER')
+genius = lyricsgenius.Genius('YOUR_GENIUS_API_TOKEN_HERE')
 isCopied = False  # Variable to keep track of whether the lyrics have been copied or not
 
 # Class to redirect print statements to the status_text widget
@@ -111,7 +112,7 @@ def auto_save(title, artist):
             writer.writerow(["Title", "Artist"])
             writer.writerows(unique_data)
             writer.writerow([title_clean, artist_clean])
-            print(f"{title_clean} by {artist_clean} saved to {filename}.")
+            print(f"\033[32m{title_clean} by {artist_clean} saved to {filename}.\033[0m")
     except Exception as e:
         print(f"Error accessing {filename}: {e}")
 
@@ -132,6 +133,21 @@ def search_lyrics(event=None):
 
     search_thread = threading.Thread(target=perform_search)
     search_thread.start()
+
+# Function to search for lyrics using AZlyrics
+def azLyrics_search():
+    print("Searching for the lyrics...")
+    api = AZlyrics("google")
+    api.title = song_entry.get()
+    lyrics = api.getLyrics()
+    formatted = f"{api.title}\n{api.artist}\n\n{lyrics}\n\n{auto_tags(api.title, api.artist)}"
+    lyrics_text.configure(state="normal")
+    lyrics_text.delete("1.0", tk.END)
+    lyrics_text.insert(tk.END, formatted)
+    lyrics_text.configure(state="disabled")
+
+    print("Lyrics displayed successfully.")
+    auto_save(api.title, api.artist)
 
 # Function to display lyrics when a song is selected
 def on_song_select(event):
@@ -161,6 +177,7 @@ def reset_lyrics():
     print("Application reset. Ready to search again.")
     isCopied = False  # Reset isCopied to False
 
+# Function to copy lyrics to clipboard
 def auto_copy(event):
     global isCopied
     if not isCopied:  # Check if the lyrics have not been copied yet
@@ -198,6 +215,10 @@ song_entry.bind("<Return>", search_lyrics)
 # Create the search button
 search_button = tk.Button(search_frame, text="Search", command=search_lyrics)
 search_button.pack(side=tk.LEFT)
+
+# Create the azLyrics button
+azLyrics_button = tk.Button(search_frame, text="AZLyrics", command=azLyrics_search)
+azLyrics_button.pack(side=tk.LEFT, padx=(5, 0))
 
 # Create the song list
 song_list = tk.Listbox(root, height=6)
